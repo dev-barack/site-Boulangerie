@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Boulangerie — Accès Sécurisé</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="auth-body">
+    <div class="background-glow glow-1"></div>
+    <div class="background-glow glow-2"></div>
+
+    <div class="auth-shell">
+      <div class="brand-card">
+        <div class="brand-card__top">
+          <img src="images/logo.jpg" alt="Logo de la boulangerie" />
+          <div>
+            <p class="eyebrow">Espace réservé</p>
+            <h1>Boulangerie D’Oree</h1>
+          </div>
+        </div>
+        <p>Console de gestion premium, pensée pour l’administration de la boulangerie.</p>
+        <ul>
+          <li>Vue en temps réel sur ventes, production et stock</li>
+          <li>Suivi client, équipe et performance commerciale</li>
+          <li>Accès sécurisé avec contrôle total des activités</li>
+        </ul>
+        <div class="feature-badges">
+          <span>🔐 Sécurisé</span>
+          <span>✨ Premium</span>
+          <span>📈 Intelligent</span>
+        </div>
+      </div>
+
+      <form id="loginForm" class="auth-card">
+        <div class="auth-card__header">
+          <span class="status-pill">Accès Admin</span>
+          <h2>Connexion</h2>
+          <p>Identifiez-vous pour accéder au cockpit de gestion.</p>
+        </div>
+
+        <label for="email">Adresse e-mail</label>
+        <input id="email" name="email" type="email" placeholder="admin@boulangerie.com" required />
+
+        <label for="password">Mot de passe</label>
+        <input id="password" name="password" type="password" placeholder="••••••••" required />
+
+        <button type="submit">Connexion</button>
+
+        <div class="helper-row">
+          <span>🧿 Design premium</span>
+          <span>⚡ Accès instantané</span>
+        </div>
+
+        <p class="demo-note">Démo : admin@boulangerie.com / Admin2026!</p>
+      </form>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

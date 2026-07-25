@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard Admin | Boulangerie D’Oree</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="dashboard-body">
+    <header class="top-nav">
+      <div class="top-nav__brand">
+        <img src="images/logo.jpg" alt="Logo boulangerie" />
+        <div>
+          <h3>Boulangerie D’Oree</h3>
+          <p>Admin premium</p>
+        </div>
+      </div>
+
+      <button class="menu-toggle" aria-label="Ouvrir le menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="top-nav__links" aria-label="Navigation principale">
+        <a href="#">Vue d’ensemble</a>
+        <a href="#">Ventes</a>
+        <a href="#">Stock</a>
+        <a href="#">Équipe</a>
+        <a href="#">Clients</a>
+      </nav>
+    </header>
+
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div>
+          <div class="sidebar__brand">
+            <img src="images/logo.jpg" alt="Logo boulangerie" />
+            <div>
+              <h3>Boulangerie D’Oree</h3>
+              <p>Admin Console</p>
+            </div>
+          </div>
+
+          <div class="tool-card">
+            <p class="tool-card__title">Centre d’action</p>
+            <ul>
+              <li>Vérifier les commandes du jour</li>
+              <li>Valider les livraisons</li>
+              <li>Gérer le stock de farine</li>
+              <li>Préparer les alertes clients</li>
+            </ul>
+          </div>
+
+          <div class="tool-card tool-card--accent">
+            <p class="tool-card__title">Priorité du moment</p>
+            <strong>Réapprovisionnement prévu à 16h</strong>
+            <p>3 articles à recharger avant la forte affluence.</p>
+          </div>
+        </div>
+
+        <div class="sidebar__footer">
+          <p>Statut système</p>
+          <span class="status-pill">Opérationnel</span>
+        </div>
+      </aside>
+
+      <main class="main-content">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Tableau de bord administrateur</p>
+            <h1>Gestion complète de la boulangerie</h1>
+          </div>
+          <div class="topbar__meta">
+            <span class="status-pill">Live • 24/7</span>
+            <span id="currentDate" class="date-pill"></span>
+          </div>
+        </header>
+
+        <section class="hero-panel">
+          <div class="hero-copy">
+            <p class="eyebrow">Performances du jour</p>
+            <h2>La production, les ventes et la satisfaction client montent en rythme.</h2>
+            <p>Suivi premium de la production, des commandes, des agents et de l’expérience client.</p>
+          </div>
+          <div class="hero-panel__stats">
+            <div>
+              <strong>+18%</strong>
+              <span>Ventes</span>
+            </div>
+            <div>
+              <strong>96%</strong>
+              <span>Satisfaction</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="kpi-grid">
+          <article class="kpi-card">
+            <p>CA du jour</p>
+            <h3 data-counter="5200">0</h3>
+            <span>+12% vs hier</span>
+          </article>
+          <article class="kpi-card">
+            <p>Commandes traitées</p>
+            <h3 data-counter="128">0</h3>
+            <span>37 livraisons en cours</span>
+          </article>
+          <article class="kpi-card">
+            <p>Produits en stock</p>
+            <h3 data-counter="86">0</h3>
+            <span>11 articles faibles</span>
+          </article>
+          <article class="kpi-card">
+            <p>Clients actifs</p>
+            <h3 data-counter="342">0</h3>
+            <span>92 VIP fidélisés</span>
+          </article>
+        </section>
+
+        <section class="content-grid">
+          <article class="panel panel--wide chart-panel">
+            <div class="panel__header">
+              <div>
+                <h3>Évolution des ventes</h3>
+                <p>Vue premium sur la semaine</p>
+              </div>
+              <span class="chip">Prévision stable</span>
+            </div>
+            <div class="chart-shell">
+              <svg viewBox="0 0 420 200" class="line-chart" role="img" aria-label="Graphique des ventes de la semaine">
+                <defs>
+                  <linearGradient id="goldFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#f7d68d" />
+                    <stop offset="100%" stop-color="#fff7e4" />
+                  </linearGradient>
+                </defs>
+                <path d="M10 150 C60 120, 90 90, 130 110 S210 160, 250 120 S330 60, 410 70 L410 200 L10 200 Z" fill="url(#goldFill)"></path>
+                <path d="M10 150 C60 120, 90 90, 130 110 S210 160, 250 120 S330 60, 410 70" fill="none" stroke="#c98f30" stroke-width="4" stroke-linecap="round"></path>
+                <circle cx="130" cy="110" r="5" fill="#fff" stroke="#c98f30" stroke-width="3"></circle>
+                <circle cx="250" cy="120" r="5" fill="#fff" stroke="#c98f30" stroke-width="3"></circle>
+                <circle cx="410" cy="70" r="5" fill="#fff" stroke="#c98f30" stroke-width="3"></circle>
+              </svg>
+              <div class="chart-legend">
+                <span><i class="dot gold"></i>Ventes</span>
+                <span><i class="dot pale"></i>Prévision</span>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel__header">
+              <h3>Activités récentes</h3>
+              <span class="chip">Live</span>
+            </div>
+            <ul class="activity-list">
+              <li><strong>08:20</strong> — 12 baguettes vendues au quartier A.</li>
+              <li><strong>09:10</strong> — Réapprovisionnement de farine validé.</li>
+              <li><strong>10:45</strong> — Agent Malik clôture 3 commandes.</li>
+              <li><strong>12:15</strong> — Nouveau client VIP enregistré.</li>
+            </ul>
+          </article>
+
+          <article class="panel">
+            <div class="panel__header">
+              <h3>Stock critique</h3>
+              <span class="chip warning">À surveiller</span>
+            </div>
+            <table>
+              <tr><th>Produit</th><th>Qté</th></tr>
+              <tr><td>Farine</td><td>14 sacs</td></tr>
+              <tr><td>Sucre</td><td>8 kg</td></tr>
+              <tr><td>Œufs</td><td>38</td></tr>
+              <tr><td>Beurre</td><td>6 kg</td></tr>
+            </table>
+          </article>
+
+          <article class="panel">
+            <div class="panel__header">
+              <h3>Performance équipe</h3>
+              <span class="chip">+9%</span>
+            </div>
+            <ul class="list-stack">
+              <li>Amina — 26 ventes aujourd’hui</li>
+              <li>Malik — 19 commandes livrées</li>
+              <li>Sarah — 14 clients fidélisés</li>
+            </ul>
+          </article>
+
+          <article class="panel panel--wide">
+            <div class="panel__header">
+              <div>
+                <h3>Clients & commandes</h3>
+                <p>Segmentation premium</p>
+              </div>
+              <span class="chip">Segment VIP</span>
+            </div>
+            <div class="customer-grid">
+              <div>
+                <h4>Top client</h4>
+                <p>Mr. Diop — 14 commandes ce mois</p>
+              </div>
+              <div>
+                <h4>Retours</h4>
+                <p>2 signalements mineurs, résolus</p>
+              </div>
+              <div>
+                <h4>Conversion</h4>
+                <p>68% depuis la campagne WhatsApp</p>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel__header">
+              <h3>Répartition horaire</h3>
+              <span class="chip warning">Pic 11h</span>
+            </div>
+            <div class="bar-stack">
+              <div class="bar-group"><div class="bar-fill" style="height: 62%"></div><span>08h</span></div>
+              <div class="bar-group"><div class="bar-fill" style="height: 78%"></div><span>10h</span></div>
+              <div class="bar-group"><div class="bar-fill" style="height: 96%"></div><span>11h</span></div>
+              <div class="bar-group"><div class="bar-fill" style="height: 74%"></div><span>14h</span></div>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
