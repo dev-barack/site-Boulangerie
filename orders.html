@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commandes — Boulangerie Dana</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside>
+            <div>
+                <div class="sidebar-brand">
+                    <img src="images/logo.PNG" alt="Logo">
+                    <h2>D’Oree Admin</h2>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="dashboard.html">📊 Dashboard</a></li>
+                    <li><a href="sales.html">💰 Ventes</a></li>
+                    <li><a href="orders.html" class="active">📦 Commandes</a></li>
+                    <li><a href="products.html">🥖 Stocks de Pains</a></li>
+                    <li><a href="clients.html">👥 Équipe & Clients</a></li>
+                </ul>
+            </div>
+            <div>
+                <button id="btn-logout" style="width: 100%; background: #ef4444; border:none; padding:10px; border-radius:8px; color:white; cursor:pointer;">Déconnexion</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main>
+            <header>
+                <h1>Gestion des Commandes</h1>
+                <p>Suivi en direct de toutes les commandes passées par les clients (en attente et validées).</p>
+            </header>
+
+            <div class="panel">
+                <h3>Flux des Commandes en Temps Réel</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date / Heure</th>
+                            <th>Client</th>
+                            <th>Articles Commandés</th>
+                            <th>Montant Total (FC)</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-table-body">
+                        <!-- Rempli dynamiquement par script.js -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>

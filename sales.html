@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventes — Boulangerie Dana</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <aside>
+            <div>
+                <div class="sidebar-brand">
+                    <img src="images/logo.PNG" alt="Logo">
+                    <h2>D’Oree Admin</h2>
+                </div>
+                <ul class="sidebar-menu">
+                    <li><a href="dashboard.html">📊 Dashboard</a></li>
+                    <li><a href="sales.html" class="active">💰 Ventes</a></li>
+                    <li><a href="products.html">🥖 Stocks de Pains</a></li>
+                    <li><a href="clients.html">👥 Équipe & Clients</a></li>
+                </ul>
+            </div>
+        </aside>
+
+        <main>
+            <header>
+                <h1>Historique des Ventes</h1>
+                <p>Suivi détaillé des commandes validées et encaissées par les employés.</p>
+            </header>
+
+            <div class="panel">
+                <h3>Toutes les transactions</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date / Heure</th>
+                            <th>Client</th>
+                            <th>Montant (FC)</th>
+                            <th>Bénéfice Estimé</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sales-table-body">
+                        <!-- Rempli dynamiquement par script.js -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script type="module" src="script.js"></script>
+</body>
+       </html>

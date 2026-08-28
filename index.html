@@ -13,10 +13,10 @@
     <div class="auth-shell">
       <div class="brand-card">
         <div class="brand-card__top">
-          <img src="images/logo.jpg" alt="Logo de la boulangerie" />
+          <img src="images/logo.PNG" alt="Logo de la boulangerie" />
           <div>
             <p class="eyebrow">Espace réservé</p>
-            <h1>Boulangerie D’Oree</h1>
+            <h1>Boulangerie Dana</h1>
           </div>
         </div>
         <p>Console de gestion premium, pensée pour l’administration de la boulangerie.</p>
@@ -45,17 +45,18 @@
         <label for="password">Mot de passe</label>
         <input id="password" name="password" type="password" placeholder="••••••••" required />
 
-        <button type="submit">Connexion</button>
+        <button type="submit" id="btn-submit">Connexion</button>
 
         <div class="helper-row">
           <span>🧿 Design premium</span>
           <span>⚡ Accès instantané</span>
         </div>
-
-        <p class="demo-note">Démo : admin@boulangerie.com / Admin2026!</p>
+        <!-- Pour afficher les erreurs -->
+        <p id="login-error" style="color: var(--warning); text-align: center; margin-top: 10px; font-size: 0.9rem;"></p>
       </form>
     </div>
 
-    <script src="script.js"></script>
+    <!-- Modification ici : type="module" -->
+    <script type="module" src="script.js"></script>
   </body>
 </html>
