@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Statistiques — Boulangerie DANA</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
+</head>
+<body class="stats-page">
+  <div class="app-container">
+    <aside>
+      <div>
+        <div class="sidebar-brand">
+          <img src="images/logo.png" alt="Logo">
+          <h2>DANA Admin</h2>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="dashboard.html">📊 Dashboard</a></li>
+          <li><a href="users.html">👥 Gestion Utilisateurs</a></li>
+          <li><a href="products.html">🥖 Produits</a></li>
+          <li><a href="orders.html">📦 Commandes</a></li>
+          <li><a href="sales.html">💰 Ventes</a></li>
+          <li><a href="qr_cards.html">🔖 QR / Cartes clients</a></li>
+          <li><a href="loyalty.html">🏅 Fidélité</a></li>
+          <li><a href="stats.html" class="active">📈 Statistiques</a></li>
+          <li><a href="admins.html">🛡️ Administrateurs</a></li>
+          <li><a href="settings.html">⚙️ Paramètres</a></li>
+        </ul>
+      </div>
+      <div>
+        <button id="logout-btn" class="btn" style="width:100%;background:#ef4444;border:none;padding:8px;border-radius:8px;color:white;cursor:pointer;">Déconnexion</button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="app-header compact-header" role="banner">
+        <div class="header-identity">
+          <img src="images/logo.png" alt="Logo DANA" />
+          <div class="header-identity-copy">
+            <span class="header-page-title">Statistiques</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <select id="stats-period" aria-label="Période statistique"><option value="today">Aujourd’hui</option><option value="week">Cette semaine</option><option value="month">Ce mois</option><option value="all">Tout</option></select>
+          <div id="profile-bubble">A</div>
+        </div>
+      </header>
+
+      <div class="stats-kpi-grid">
+        <div class="stats-kpi-card"><span>Chiffre d’affaires total</span><strong id="stat-revenue">—</strong></div>
+        <div class="stats-kpi-card"><span>Commandes totales</span><strong id="stat-orders">—</strong></div>
+        <div class="stats-kpi-card"><span>Clients inscrits</span><strong id="stat-clients">—</strong></div>
+        <div class="stats-kpi-card"><span>Produits disponibles</span><strong id="stat-products">—</strong></div>
+        <div class="stats-kpi-card"><span>Panier moyen</span><strong id="stat-average">—</strong></div>
+        <div class="stats-kpi-card"><span>Taux de retrait</span><strong id="stat-retrieval">—</strong></div>
+      </div>
+
+      <div class="stats-chart-grid">
+        <div class="panel"><h3>Évolution du chiffre d’affaires</h3><div class="stats-chart-wrap"><canvas id="stats-sales-chart"></canvas></div></div>
+        <div class="panel"><h3>Ventes par catégorie</h3><div class="stats-chart-wrap"><canvas id="stats-category-chart"></canvas></div></div>
+      </div>
+
+      <div class="stats-table-grid">
+        <div class="panel"><h3>Top 5 produits</h3><table><thead><tr><th>Produit</th><th>Quantité</th><th>CA généré</th></tr></thead><tbody id="top-products-body"><tr><td colspan="3" class="empty-state">Chargement...</td></tr></tbody></table></div>
+        <div class="panel"><h3>Top 5 clients</h3><table><thead><tr><th>Client</th><th>Commandes</th><th>Total dépensé</th></tr></thead><tbody id="top-clients-body"><tr><td colspan="3" class="empty-state">Chargement...</td></tr></tbody></table></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="script.js"></script>
+  <script type="module" src="stats.js"></script>
+</body>
+</html>

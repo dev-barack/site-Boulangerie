@@ -1,53 +1,92 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ventes — Boulangerie Dana</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ventes — Boulangerie DANA</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
 </head>
-<body>
-    <div class="app-container">
-        <aside>
-            <div>
-                <div class="sidebar-brand">
-                    <img src="images/logo.PNG" alt="Logo">
-                    <h2>D’Oree Admin</h2>
-                </div>
-                <ul class="sidebar-menu">
-                    <li><a href="dashboard.html">📊 Dashboard</a></li>
-                    <li><a href="sales.html" class="active">💰 Ventes</a></li>
-                    <li><a href="products.html">🥖 Stocks de Pains</a></li>
-                    <li><a href="clients.html">👥 Équipe & Clients</a></li>
-                </ul>
-            </div>
-        </aside>
+<body class="sales-page">
+  <div class="app-container">
+    <aside>
+      <div>
+        <div class="sidebar-brand">
+          <img src="images/logo.png" alt="Logo" />
+          <h2>DANA Admin</h2>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="dashboard.html">📊 Dashboard</a></li>
+          <li><a href="users.html">👥 Gestion Utilisateurs</a></li>
+          <li><a href="products.html">🥖 Produits</a></li>
+          <li><a href="orders.html">📦 Commandes</a></li>
+          <li><a href="sales.html" class="active">💰 Ventes</a></li>
+          <li><a href="qr_cards.html">🔖 QR / Cartes clients</a></li>
+          <li><a href="loyalty.html">🏅 Fidélité</a></li>
+          <li><a href="stats.html">📈 Statistiques</a></li>
+          <li><a href="admins.html">🛡️ Administrateurs</a></li>
+          <li><a href="settings.html">⚙️ Paramètres</a></li>
+        </ul>
+      </div>
+      <div>
+        <button id="logout-btn" class="btn" style="width:100%;background:#ef4444;border:none;padding:8px;border-radius:8px;color:white;cursor:pointer;">Déconnexion</button>
+      </div>
+    </aside>
 
-        <main>
-            <header>
-                <h1>Historique des Ventes</h1>
-                <p>Suivi détaillé des commandes validées et encaissées par les employés.</p>
-            </header>
+    <main>
+      <header class="app-header compact-header" role="banner">
+        <div class="header-identity">
+          <img src="images/logo.png" alt="Logo DANA" />
+          <div class="header-identity-copy">
+            <span class="header-page-title">Ventes</span>
+          </div>
+        </div>
 
-            <div class="panel">
-                <h3>Toutes les transactions</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Date / Heure</th>
-                            <th>Client</th>
-                            <th>Montant (FC)</th>
-                            <th>Bénéfice Estimé</th>
-                            <th>Statut</th>
-                        </tr>
-                    </thead>
-                    <tbody id="sales-table-body">
-                        <!-- Rempli dynamiquement par script.js -->
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
-    <script type="module" src="script.js"></script>
+        <div class="header-right">
+          <div id="profile-bubble">A</div>
+        </div>
+      </header>
+
+      <div class="sales-kpi-grid">
+        <div class="sales-kpi-card"><span>Chiffre d’affaires total</span><strong id="sales-total-revenue">—</strong></div>
+        <div class="sales-kpi-card"><span>Nombre de commandes</span><strong id="sales-order-count">—</strong></div>
+        <div class="sales-kpi-card"><span>Produit star</span><strong id="sales-top-product">—</strong></div>
+        <div class="sales-kpi-card"><span>Meilleur client</span><strong id="sales-top-client">—</strong></div>
+      </div>
+
+      <div class="panel" style="margin-top:12px;">
+        <div class="sales-table-toolbar">
+          <input id="sales-search" placeholder="Rechercher un client ou une commande" aria-label="Recherche ventes" />
+          <select id="sales-status-filter" aria-label="Filtrer par statut"><option value="">Tous les statuts</option><option value="PENDING">En attente</option><option value="VALIDATED">Validée</option><option value="READY">Prête</option><option value="RETRIEVED">Retirée</option><option value="CANCELLED">Annulée</option></select>
+          <select id="sales-period-filter" aria-label="Filtrer par période"><option value="all">Toutes les dates</option><option value="today">Aujourd’hui</option><option value="week">Cette semaine</option><option value="month">Ce mois</option></select>
+        </div>
+        <div id="sales-loading" class="orders-spinner" hidden>Chargement des ventes...</div>
+        <table style="width:100%;font-size:13px;">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Client</th>
+              <th>Produits</th>
+              <th>Quantité</th>
+              <th>Total</th>
+              <th>Statut</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody id="sales-table-body">
+            <tr><td colspan="7" class="empty-state">Chargement des ventes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="panel sales-chart-panel" style="margin-top:12px;">
+        <h3>Évolution des ventes sur les 7 derniers jours</h3>
+        <div class="sales-chart-wrap"><canvas id="sales-chart"></canvas></div>
+      </div>
+    </main>
+  </div>
+
+  <script type="module" src="script.js"></script>
+  <script type="module" src="sales.js"></script>
 </body>
-       </html>
+</html>

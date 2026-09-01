@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Produits — Boulangerie DANA</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Utilisateurs — Boulangerie DANA</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="app-container">
     <aside>
       <div>
         <div class="sidebar-brand">
-          <img src="images/logo.png" alt="Logo" />
+          <img src="images/logo.png" alt="Logo">
           <h2>DANA Admin</h2>
         </div>
         <ul class="sidebar-menu">
           <li><a href="dashboard.html">📊 Dashboard</a></li>
-          <li><a href="users.html">👥 Gestion Utilisateurs</a></li>
-          <li><a href="products.html" class="active">🥖 Produits</a></li>
+          <li><a href="users.html" class="active">👥 Gestion Utilisateurs</a></li>
+          <li><a href="products.html">🥖 Produits</a></li>
           <li><a href="orders.html">📦 Commandes</a></li>
           <li><a href="sales.html">💰 Ventes</a></li>
           <li><a href="qr_cards.html">🔖 QR / Cartes clients</a></li>
@@ -37,48 +37,55 @@
         <div class="header-identity">
           <img src="images/logo.png" alt="Logo DANA" />
           <div class="header-identity-copy">
-
-            <span class="header-page-title">Produits</span>
+            <span class="header-page-title">Gestion Utilisateurs</span>
           </div>
         </div>
 
         <div class="header-right">
-          <label class="header-search" aria-label="Recherche produits">
-            <input id="products-search" placeholder="Rechercher un produit" aria-label="Recherche produit" />
+          <label class="header-search" aria-label="Recherche utilisateurs">
+            <input id="users-search" placeholder="Rechercher (nom, téléphone, rôle)" aria-label="Recherche" />
           </label>
           <div id="profile-bubble">A</div>
         </div>
       </header>
 
-      <div class="page-toolbar" aria-label="Actions produit">
+      <div class="page-toolbar" aria-label="Actions utilisateur">
         <div class="toolbar-left"></div>
         <div class="toolbar-actions">
-          <button id="btn-add-product" class="btn">+ Ajouter un produit</button>
+          <select id="users-filter-role" aria-label="Filtre rôle">
+            <option value="">Tous rôles</option>
+            <option value="ADMIN">Admins</option>
+            <option value="agent">Agents</option>
+            <option value="client">Clients</option>
+          </select>
+          <button id="btn-add-user" class="btn">+ Créer un compte</button>
         </div>
       </div>
 
       <div class="panel" style="margin-top:12px;">
-        <div id="products-loading" class="skeleton" style="height:12px;width:120px;margin-bottom:8px;display:none;"></div>
+        <div id="users-loading" class="skeleton" style="height:12px;width:120px;margin-bottom:8px;display:none;"></div>
         <table style="width:100%;font-size:13px;">
           <thead>
             <tr>
-              <th>Aperçu</th>
-              <th>Nom</th>
-              <th>Prix</th>
-              <th>Stock</th>
-              <th>Disponibilité</th>
-              <th style="text-align:right;">Actions</th>
+              <th style="padding:8px;">Nom</th>
+              <th style="padding:8px;">Téléphone</th>
+              <th style="padding:8px;">Rôle</th>
+              <th style="padding:8px;">Points</th>
+              <th style="padding:8px;">Statut</th>
+              <th style="padding:8px;text-align:right;">Actions</th>
             </tr>
           </thead>
-          <tbody id="products-table-body">
-            <tr><td colspan="6" class="empty-state">Chargement des produits...</td></tr>
+          <tbody id="users-table-body">
+            <tr><td colspan="6" class="empty-state">Chargement des comptes...</td></tr>
           </tbody>
         </table>
       </div>
+
     </main>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
   <script type="module" src="script.js"></script>
-  <script type="module" src="products.js"></script>
+  <script type="module" src="users.js"></script>
 </body>
 </html>

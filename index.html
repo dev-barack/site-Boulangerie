@@ -7,13 +7,23 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body class="auth-body">
+    <div class="auth-intro" aria-hidden="true">
+      <div class="auth-intro__logo-wrap">
+        <img src="images/logo.png" alt="Logo de la boulangerie" />
+      </div>
+      <div class="auth-intro__text">
+        <span class="auth-intro__eyebrow">Boulangerie Dana</span>
+        <strong>Administration</strong>
+      </div>
+    </div>
+
     <div class="background-glow glow-1"></div>
     <div class="background-glow glow-2"></div>
 
     <div class="auth-shell">
       <div class="brand-card">
         <div class="brand-card__top">
-          <img src="images/logo.PNG" alt="Logo de la boulangerie" />
+          <img src="images/logo.png" alt="Logo de la boulangerie" />
           <div>
             <p class="eyebrow">Espace réservé</p>
             <h1>Boulangerie Dana</h1>
@@ -32,7 +42,7 @@
         </div>
       </div>
 
-      <form id="loginForm" class="auth-card">
+      <form id="loginForm" class="auth-card" method="post">
         <div class="auth-card__header">
           <span class="status-pill">Accès Admin</span>
           <h2>Connexion</h2>
@@ -45,6 +55,10 @@
         <label for="password">Mot de passe</label>
         <input id="password" name="password" type="password" placeholder="••••••••" required />
 
+        <div class="auth-forgot-password-wrap">
+          <button type="button" id="forgot-password-link" class="text-link">Mot de passe oublié ?</button>
+        </div>
+
         <button type="submit" id="btn-submit">Connexion</button>
 
         <div class="helper-row">
@@ -56,7 +70,25 @@
       </form>
     </div>
 
-    <!-- Modification ici : type="module" -->
+    <div id="forgot-password-modal" class="modal-backdrop hidden" aria-hidden="true">
+      <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="forgot-password-title">
+        <div class="modal-header">
+          <h3 id="forgot-password-title">Réinitialisation du mot de passe</h3>
+          <button type="button" class="modal-close-btn" id="forgot-password-close" aria-label="Fermer">✕</button>
+        </div>
+
+        <form id="forgot-password-form" class="modal-form">
+          <label for="forgot-password-email">Adresse e-mail</label>
+          <input id="forgot-password-email" name="forgot-password-email" type="email" placeholder="admin@boulangerie.com" required />
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" id="forgot-password-cancel">Annuler</button>
+            <button type="submit" class="btn-primary" id="forgot-password-submit">Envoyer le lien de réinitialisation</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script type="module" src="script.js"></script>
   </body>
 </html>

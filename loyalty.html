@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Produits — Boulangerie DANA</title>
+  <title>Fidélité — Boulangerie DANA</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -11,17 +11,17 @@
     <aside>
       <div>
         <div class="sidebar-brand">
-          <img src="images/logo.png" alt="Logo" />
+          <img src="images/logo.png" alt="Logo">
           <h2>DANA Admin</h2>
         </div>
         <ul class="sidebar-menu">
           <li><a href="dashboard.html">📊 Dashboard</a></li>
           <li><a href="users.html">👥 Gestion Utilisateurs</a></li>
-          <li><a href="products.html" class="active">🥖 Produits</a></li>
+          <li><a href="products.html">🥖 Produits</a></li>
           <li><a href="orders.html">📦 Commandes</a></li>
           <li><a href="sales.html">💰 Ventes</a></li>
           <li><a href="qr_cards.html">🔖 QR / Cartes clients</a></li>
-          <li><a href="loyalty.html">🏅 Fidélité</a></li>
+          <li><a href="loyalty.html" class="active">🏅 Fidélité</a></li>
           <li><a href="stats.html">📈 Statistiques</a></li>
           <li><a href="admins.html">🛡️ Administrateurs</a></li>
           <li><a href="settings.html">⚙️ Paramètres</a></li>
@@ -37,41 +37,29 @@
         <div class="header-identity">
           <img src="images/logo.png" alt="Logo DANA" />
           <div class="header-identity-copy">
-
-            <span class="header-page-title">Produits</span>
+            <span class="header-page-title">Fidélité</span>
           </div>
         </div>
-
         <div class="header-right">
-          <label class="header-search" aria-label="Recherche produits">
-            <input id="products-search" placeholder="Rechercher un produit" aria-label="Recherche produit" />
+          <label class="header-search" aria-label="Recherche fidélité">
+            <input id="loyalty-search" placeholder="Rechercher un client" aria-label="Recherche fidélité" />
           </label>
           <div id="profile-bubble">A</div>
         </div>
       </header>
 
-      <div class="page-toolbar" aria-label="Actions produit">
-        <div class="toolbar-left"></div>
-        <div class="toolbar-actions">
-          <button id="btn-add-product" class="btn">+ Ajouter un produit</button>
-        </div>
-      </div>
-
       <div class="panel" style="margin-top:12px;">
-        <div id="products-loading" class="skeleton" style="height:12px;width:120px;margin-bottom:8px;display:none;"></div>
         <table style="width:100%;font-size:13px;">
           <thead>
             <tr>
-              <th>Aperçu</th>
-              <th>Nom</th>
-              <th>Prix</th>
-              <th>Stock</th>
-              <th>Disponibilité</th>
+              <th>Client</th>
+              <th>Points</th>
+              <th>Commandes</th>
               <th style="text-align:right;">Actions</th>
             </tr>
           </thead>
-          <tbody id="products-table-body">
-            <tr><td colspan="6" class="empty-state">Chargement des produits...</td></tr>
+          <tbody id="loyalty-table-body">
+            <tr><td colspan="4" class="empty-state">Chargement de la fidélité...</td></tr>
           </tbody>
         </table>
       </div>
@@ -79,6 +67,6 @@
   </div>
 
   <script type="module" src="script.js"></script>
-  <script type="module" src="products.js"></script>
+  <script type="module" src="loyalty.js"></script>
 </body>
 </html>

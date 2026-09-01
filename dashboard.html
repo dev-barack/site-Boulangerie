@@ -8,70 +8,145 @@
     <!-- Chart.js pour les graphiques -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/chart.umd.min.js"></script>
 </head>
-<body>
+<body class="dashboard-page">
     <div class="app-container">
         <!-- Sidebar -->
         <aside>
             <div>
                 <div class="sidebar-brand">
-                    <img src="images/logo.PNG" alt="Logo">
-                    <h2>D’Oree Admin</h2>
+                    <img src="images/logo.png" alt="Logo">
+                    <h2>DANA Admin</h2>
                 </div>
                 <ul class="sidebar-menu">
                     <li><a href="dashboard.html" class="active">📊 Dashboard</a></li>
+                    <li><a href="users.html">👥 Gestion Utilisateurs</a></li>
+                    <li><a href="products.html">🥖 Produits</a></li>
+                    <li><a href="orders.html">📦 Commandes</a></li>
                     <li><a href="sales.html">💰 Ventes</a></li>
-                    <li><a href="products.html">🥖 Stocks de Pains</a></li>
-                    <li><a href="clients.html">👥 Équipe & Clients</a></li>
+                    <li><a href="qr_cards.html">🔖 QR / Cartes clients</a></li>
+                    <li><a href="loyalty.html">🏅 Fidélité</a></li>
+                    <li><a href="stats.html">📈 Statistiques</a></li>
+                    <li><a href="admins.html">🛡️ Administrateurs</a></li>
+                    <li><a href="settings.html">⚙️ Paramètres</a></li>
                 </ul>
             </div>
             <div>
-                <button id="btn-logout" style="width: 100%; background: #ef4444; border:none; padding:10px; border-radius:8px; color:white; cursor:pointer;">Déconnexion</button>
+                <button id="logout-btn" class="btn" style="width: 100%; background: #ef4444; border:none; padding:8px; border-radius:8px; color:white; cursor:pointer;">Déconnexion</button>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main>
-            <header>
-                <h1>Tableau de Bord Général</h1>
-                <p>Vue d'ensemble en temps réel de l'activité de la boulangerie.</p>
+            <header class="app-header compact-header" role="banner">
+                <div class="header-identity">
+                    <img src="images/logo.png" alt="DANA" />
+                    <div class="header-identity-copy">
+                        <span class="header-page-title">Dashboard</span>
+                    </div>
+                </div>
+                <div class="header-right"><div id="profile-bubble">A</div></div>
             </header>
 
+            <div id="dashboard-loading" class="orders-spinner" hidden>Chargement du dashboard...</div>
+
+            <!-- Welcome summary -->
+            <div class="dashboard-summary-card panel" style="margin-top:16px;">
+                <div>
+                    <span class="eyebrow subtle">Vue d’ensemble</span>
+                    <h2 id="welcome-title" style="margin:8px 0 6px;">Bienvenue sur le cockpit</h2>
+                </div>
+                <p style="color:var(--text-muted);margin-top:6px;">Synthèse rapide des activités en cours. Les chiffres proviennent directement de Firestore et se mettent à jour en temps réel.</p>
+            </div>
+
+            <div id="quick-actions" class="quick-actions-grid" style="margin-top:16px;"></div>
+
             <!-- KPI Cards -->
-            <div class="kpi-grid">
+            <div class="kpi-grid" style="margin-top:16px;">
                 <div class="kpi-card">
-                    <span>Chiffre d'Affaires</span>
-                    <h3 id="kpi-ca">0 FC</h3>
+                    <span>Clients</span>
+                    <h3 id="kpi-clients">—</h3>
                 </div>
                 <div class="kpi-card">
-                    <span>Commandes Validées</span>
-                    <h3 id="kpi-orders">0</h3>
+                    <span>Commandes (total)</span>
+                    <h3 id="kpi-orders">—</h3>
                 </div>
                 <div class="kpi-card">
-                    <span>Clients Enregistrés</span>
-                    <h3 id="kpi-clients">0</h3>
+                    <span>Commandes (aujourd'hui)</span>
+                    <h3 id="kpi-orders-today">—</h3>
                 </div>
                 <div class="kpi-card">
-                    <span>Employés Actifs</span>
-                    <h3 id="kpi-agents">0</h3>
+                    <span>Chiffre d'affaires</span>
+                    <h3 id="kpi-revenue">—</h3>
+                </div>
+                <div class="kpi-card">
+                    <span>Produits</span>
+                    <h3 id="kpi-products">—</h3>
+                </div>
+                <div class="kpi-card">
+                    <span>Équipe</span>
+                    <h3 id="kpi-team">—</h3>
                 </div>
             </div>
 
-            <!-- Graphique & Activité -->
-            <div class="content-grid">
-                <div class="panel">
-                    <h3>Courbe Générale des Ventes</h3>
-                    <canvas id="salesChart" height="130"></canvas>
+            <!-- Main charts & recent -->
+            <div class="content-grid" style="margin-top:20px;align-items:start;">
+                <div class="panel" style="min-height:360px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <h3 style="margin:0">Évolution des ventes</h3>
+                        <div style="color:var(--text-muted);font-size:0.9rem">Période: <span id="chart-range-label">30 jours</span></div>
+                    </div>
+                    <div style="height:300px;">
+                        <canvas id="salesChart" style="width:100%;height:100%;"></canvas>
+                    </div>
                 </div>
-                <div class="panel">
-                    <h3>Dernières Activités</h3>
-                    <div id="recent-activities" style="font-size: 0.85rem; color: var(--text-muted);">
-                        Chargement des flux...
+
+                <div class="panel alert-panel" style="min-height:360px;">
+                    <h3>Alertes et priorités</h3>
+                    <div id="alert-board" class="alert-board"></div>
+                </div>
+
+                <div class="panel" style="min-height:360px;">
+                    <h3>Commandes récentes</h3>
+                    <div style="margin-top:8px;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Id</th>
+                                    <th>Client</th>
+                                    <th>Montant</th>
+                                    <th>Date</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-orders-body">
+                                <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">Chargement...</td></tr>
+                            </tbody>
+                        </table>
+                        <div style="margin-top:10px;text-align:right;"><a href="orders.html" style="color:var(--accent-gold);text-decoration:none;">Voir toutes les commandes →</a></div>
                     </div>
                 </div>
             </div>
+
+            <!-- Products / Stock & Activity -->
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:20px;">
+                <div class="panel">
+                    <h3>État des produits</h3>
+                    <div id="stock-summary" style="margin-top:8px;color:var(--text-muted);">Chargement...</div>
+                    <div id="top-products-list-dashboard" style="margin-top:12px;color:var(--text-muted);">Chargement des produits populaires...</div>
+                    <div style="margin-top:10px;text-align:right;"><a href="products.html" style="color:var(--accent-gold);text-decoration:none;">Voir tous les produits →</a></div>
+                </div>
+
+                <div class="panel">
+                    <h3>Activité récente</h3>
+                    <div id="recent-activities" style="margin-top:8px;color:var(--text-muted);">Chargement des activités...</div>
+                    <div id="loyal-client-summary" class="dashboard-loyal-client">Chargement du client le plus fidèle...</div>
+                </div>
+            </div>
+
         </main>
     </div>
 
     <script type="module" src="script.js"></script>
+    <script type="module" src="dashboard.js"></script>
 </body>
        </html>

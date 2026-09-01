@@ -3,24 +3,27 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Produits — Boulangerie DANA</title>
+  <title>QR / Cartes clients — Boulangerie DANA</title>
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-<body>
+<body class="qr-cards-page">
   <div class="app-container">
     <aside>
       <div>
         <div class="sidebar-brand">
-          <img src="images/logo.png" alt="Logo" />
+          <img src="images/logo.png" alt="Logo">
           <h2>DANA Admin</h2>
         </div>
         <ul class="sidebar-menu">
           <li><a href="dashboard.html">📊 Dashboard</a></li>
           <li><a href="users.html">👥 Gestion Utilisateurs</a></li>
-          <li><a href="products.html" class="active">🥖 Produits</a></li>
+          <li><a href="products.html">🥖 Produits</a></li>
           <li><a href="orders.html">📦 Commandes</a></li>
           <li><a href="sales.html">💰 Ventes</a></li>
-          <li><a href="qr_cards.html">🔖 QR / Cartes clients</a></li>
+          <li><a href="qr_cards.html" class="active">🔖 QR / Cartes clients</a></li>
           <li><a href="loyalty.html">🏅 Fidélité</a></li>
           <li><a href="stats.html">📈 Statistiques</a></li>
           <li><a href="admins.html">🛡️ Administrateurs</a></li>
@@ -34,51 +37,40 @@
 
     <main>
       <header class="app-header compact-header" role="banner">
-        <div class="header-identity">
-          <img src="images/logo.png" alt="Logo DANA" />
-          <div class="header-identity-copy">
-
-            <span class="header-page-title">Produits</span>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <img src="images/logo.png" alt="Logo DANA" style="width:28px;height:28px;border-radius:6px;" />
+          <div style="display:flex;flex-direction:column;">
+            <span style="font-weight:700;font-size:14px;line-height:1">Cartes clients</span>
           </div>
         </div>
-
-        <div class="header-right">
-          <label class="header-search" aria-label="Recherche produits">
-            <input id="products-search" placeholder="Rechercher un produit" aria-label="Recherche produit" />
-          </label>
+        <div style="flex:1"></div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <input id="qr-search" placeholder="Rechercher un client" aria-label="Recherche client" />
           <div id="profile-bubble">A</div>
         </div>
       </header>
 
-      <div class="page-toolbar" aria-label="Actions produit">
-        <div class="toolbar-left"></div>
-        <div class="toolbar-actions">
-          <button id="btn-add-product" class="btn">+ Ajouter un produit</button>
-        </div>
-      </div>
-
       <div class="panel" style="margin-top:12px;">
-        <div id="products-loading" class="skeleton" style="height:12px;width:120px;margin-bottom:8px;display:none;"></div>
-        <table style="width:100%;font-size:13px;">
+        <div class="client-list-scroll">
+        <table class="users-table client-list-table">
           <thead>
             <tr>
-              <th>Aperçu</th>
               <th>Nom</th>
-              <th>Prix</th>
-              <th>Stock</th>
-              <th>Disponibilité</th>
+              <th>Identifiant court</th>
+              <th>Téléphone</th>
               <th style="text-align:right;">Actions</th>
             </tr>
           </thead>
-          <tbody id="products-table-body">
-            <tr><td colspan="6" class="empty-state">Chargement des produits...</td></tr>
+          <tbody id="qr-client-table-body">
+            <tr><td colspan="4" class="empty-state">Chargement des clients...</td></tr>
           </tbody>
         </table>
+        </div>
       </div>
     </main>
   </div>
 
   <script type="module" src="script.js"></script>
-  <script type="module" src="products.js"></script>
+  <script type="module" src="qr_cards.js"></script>
 </body>
 </html>

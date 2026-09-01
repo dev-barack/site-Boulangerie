@@ -1,57 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Équipe et Clients — Boulangerie Dana</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="app-container">
-        <aside>
-            <div>
-                <div class="sidebar-brand">
-                    <img src="images/logo.PNG" alt="Logo">
-                    <h2>D’Oree Admin</h2>
-                </div>
-                <ul class="sidebar-menu">
-                    <li><a href="dashboard.html">📊 Dashboard</a></li>
-                    <li><a href="sales.html">💰 Ventes</a></li>
-                    <li><a href="products.html">🥖 Stocks de Pains</a></li>
-                    <li><a href="clients.html" class="active">👥 Équipe & Clients</a></li>
-                </ul>
-            </div>
-        </aside>
-
-        <main>
-            <header>
-                <h1>Gestion des Utilisateurs</h1>
-                <p>Ajoutez des employés ou visualisez la liste des clients enregistrés.</p>
-            </header>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                <div class="panel">
-                    <h3>Ajouter un Nouvel Employé (Agent)</h3>
-                    <form id="addAgentForm" style="display: flex; flex-direction: column;">
-                        <label>Nom complet</label>
-                        <input type="text" id="agentName" placeholder="Ex: Jean Paul" required />
-                        <label>Identifiant (UserCode)</label>
-                        <input type="text" id="agentCode" placeholder="Ex: agent01" required />
-                        <label>Code PIN (4 chiffres)</label>
-                        <input type="password" id="agentPin" maxlength="4" placeholder="1234" required />
-                        <button type="submit">Créer l'employé dans Firebase</button>
-                    </form>
-                </div>
-
-                <div class="panel">
-                    <h3>Liste de l'Équipe Active</h3>
-                    <ul id="agents-list" style="list-style: none; margin-top: 10px; font-size: 0.9rem;">
-                        <!-- Rempli par script.js -->
-                    </ul>
-                </div>
-            </div>
-        </main>
-    </div>
-    <script type="module" src="script.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Redirection — Clients</title>
+    <script>
+      // Page obsolète — redirection immédiate vers la nouvelle gestion centralisée
+      window.location.replace('users.html');
+    </script>
+    <meta http-equiv="refresh" content="0;url=users.html" />
+  </head>
+  <body>
+    <p>Redirection vers la page de gestion des utilisateurs… <a href="users.html">Continuer</a></p>
+  </body>
 </html>

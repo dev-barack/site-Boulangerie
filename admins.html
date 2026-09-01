@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Administrateurs — Boulangerie DANA</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="admins-page">
+  <div class="app-container">
+    <aside>
+      <div>
+        <div class="sidebar-brand">
+          <img src="images/logo.png" alt="Logo" />
+          <h2>DANA Admin</h2>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="dashboard.html">📊 Dashboard</a></li>
+          <li><a href="users.html">👥 Gestion Utilisateurs</a></li>
+          <li><a href="products.html">🥖 Produits</a></li>
+          <li><a href="orders.html">📦 Commandes</a></li>
+          <li><a href="sales.html">💰 Ventes</a></li>
+          <li><a href="qr_cards.html">🔖 QR / Cartes clients</a></li>
+          <li><a href="loyalty.html">🏅 Fidélité</a></li>
+          <li><a href="stats.html">📈 Statistiques</a></li>
+          <li><a href="admins.html" class="active">🛡️ Administrateurs</a></li>
+          <li><a href="settings.html">⚙️ Paramètres</a></li>
+        </ul>
+      </div>
+      <div>
+        <button id="logout-btn" class="btn" style="width:100%;background:#ef4444;border:none;padding:8px;border-radius:8px;color:white;cursor:pointer;">Déconnexion</button>
+      </div>
+    </aside>
+
+    <main>
+      <header class="app-header compact-header" role="banner">
+        <div class="header-identity">
+          <img src="images/logo.png" alt="Logo DANA" />
+          <div class="header-identity-copy">
+            <span class="header-page-title">Administrateurs</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <div id="profile-bubble">A</div>
+        </div>
+      </header>
+
+      <div class="admins-topbar">
+        <div class="admin-stat-card panel">
+          <span>Total</span>
+          <strong id="admins-total">0</strong>
+        </div>
+        <div class="admin-stat-card panel">
+          <span>Actifs</span>
+          <strong id="admins-active">0</strong>
+        </div>
+        <div class="admin-stat-card panel">
+          <span>Inactifs</span>
+          <strong id="admins-inactive">0</strong>
+        </div>
+      </div>
+
+      <div class="admins-layout">
+        <section class="panel admins-panel">
+          <div class="admins-panel-header">
+            <h3>Liste des administrateurs</h3>
+            <button id="add-admin-button" class="btn" type="button">+ Ajouter un admin</button>
+          </div>
+
+          <div id="admins-list" class="admins-list"></div>
+        </section>
+
+        <aside class="panel admins-side-panel">
+          <h3>Ajouter un administrateur</h3>
+          <form id="admin-form" class="admin-form">
+            <label>
+              <span>Email</span>
+              <input id="admin-email-input" type="email" placeholder="admin@dana.com" required />
+            </label>
+            <label>
+              <span>Rôle</span>
+              <select id="admin-role-input">
+                <option value="ADMIN">ADMIN</option>
+                <option value="SUPER_ADMIN">SUPER_ADMIN</option>
+              </select>
+            </label>
+            <button type="submit" class="btn">Ajouter</button>
+          </form>
+
+          <div id="admin-email-error" class="field-error" aria-live="polite"></div>
+
+          <div class="admin-history-block">
+            <h4>Historique récent</h4>
+            <ul id="admin-history" class="admin-history"></ul>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <div id="admin-modal" class="custom-modal hidden" aria-hidden="true">
+    <div class="custom-modal-dialog">
+      <div class="custom-modal-header">
+        <h3>Modifier l’administrateur</h3>
+        <button type="button" class="modal-close" data-close-modal="true">×</button>
+      </div>
+      <form id="admin-edit-form" class="admin-form">
+        <label>
+          <span>Email</span>
+          <input id="admin-edit-email" type="email" name="adminEmail" />
+        </label>
+        <label>
+          <span>Rôle</span>
+          <select id="admin-edit-role">
+            <option value="ADMIN">ADMIN</option>
+            <option value="SUPER_ADMIN">SUPER_ADMIN</option>
+          </select>
+        </label>
+        <label>
+          <span>Statut</span>
+          <select id="admin-edit-status">
+            <option value="true">Actif</option>
+            <option value="false">Inactif</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" data-close-modal="true">Annuler</button>
+          <button type="submit" class="btn">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module" src="script.js"></script>
+  <script type="module" src="admins.js"></script>
+</body>
+</html>
