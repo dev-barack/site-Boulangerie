@@ -112,7 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
     modal.addEventListener('click', event => { if (event.target === modal) modal.remove(); });
     try {
       const snapshot = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc')));
-      const rows = snapshot.docs.map(item => ({ id: item.id, ...item.data() })).filter(order => order.clientId === user.id || order.clientId === user.uid);
+      const rows = snapshot.docs.map(item => ({ id: item.id, ...item.data() })).filter(order => {
+        const clientIds = [order.clientId, order.uid, order.customerId, order.customerUid];
+        return clientIds.includes(user.id) || clientIds.includes(user.uid) || order.clientNumber === user.clientNumber || order.customerNumber === user.clientNumber;
+      });
       const list = modal.querySelector('.order-history-list');
       list.innerHTML = rows.length ? rows.map(order => `<div class="order-history-row"><span>#${escapeHtml(order.id.slice(0, 10))}</span><span>${escapeHtml(order.status || 'PENDING')}</span><strong>${Number(order.total ?? order.totalAmount ?? 0).toLocaleString('fr-FR')} FC</strong></div>`).join('') : '<p class="empty-state">Aucune commande trouvée.</p>';
     } catch (error) {

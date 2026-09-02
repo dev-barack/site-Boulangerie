@@ -1,37 +1,63 @@
 rules_version = '2';
-
 service cloud.firestore {
   match /databases/{database}/documents {
 
     function isAuthenticated() {
-      return request.auth != null && request.auth.token.email != null;
+      return request.auth != null;
     }
 
-    function isAdminSession() {
+    function isAdminEmail() {
       return isAuthenticated() && (
         request.auth.token.email == 'devbarack2000@gmail.com' ||
         request.auth.token.email == 'devbrck@gmail.com'
       );
     }
 
+    function isAdminByRole() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'ADMIN';
+    }
+
+    function isAgentByRole() {
+      return isAuthenticated() && exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'AGENT';
+    }
+
+    function isAdmin() {
+      return isAdminEmail() || isAdminByRole();
+    }
+
     match /users/{userId} {
-      allow get, list: if true;
-      allow create, update, delete: if isAdminSession();
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /orders/{orderId} {
-      allow read: if true;
-      allow create, update, delete: if isAdminSession();
+      allow read: if isAdmin() || isAgentByRole() || (isAuthenticated() && resource.data.clientId == request.auth.uid);
+      allow create: if isAdmin() || isAgentByRole() || (isAuthenticated() && request.resource.data.clientId == request.auth.uid);
+      allow update: if isAdmin() || isAgentByRole() || (
+        isAuthenticated() &&
+        resource.data.clientId == request.auth.uid &&
+        resource.data.status == 'PENDING' &&
+        request.resource.data.clientId == resource.data.clientId &&
+        request.resource.data.status in ['PENDING', 'VALIDATED', 'CANCELLED']
+      );
+      allow delete: if isAdmin() || (isAuthenticated() && resource.data.clientId == request.auth.uid && resource.data.status in ['PENDING', 'CANCELLED']);
     }
 
     match /products/{productId} {
       allow read: if true;
-      allow create, update, delete: if isAdminSession();
+      allow write: if isAdmin();
+    }
+
+    match /offers/{offerId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
     }
 
     match /settings/{settingId} {
-      allow get, list: if true;
-      allow create, update, delete: if isAdminSession();
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }

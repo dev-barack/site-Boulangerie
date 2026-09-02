@@ -225,7 +225,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 document.addEventListener("DOMContentLoaded", () => {
-    const protectedPages = ["dashboard", "users", "products", "orders", "sales", "clients", "qr_cards", "loyalty", "stats", "admins", "settings"];
+    const protectedPages = ["dashboard", "users", "products", "offers", "orders", "sales", "clients", "qr_cards", "loyalty", "stats", "admins", "settings"];
     const loginForm = document.getElementById("loginForm");
     const loginError = document.getElementById("login-error");
 

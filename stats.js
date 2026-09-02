@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { calculateOrderTotalFromOrder } from "./calculations.js";
 
 const config = { apiKey: "AIzaSyA7YsFC0dtxU09zg8j3q6jv2UHoYQJQqTRA", authDomain: "boulangerie-dana.firebaseapp.com", projectId: "boulangerie-dana", storageBucket: "boulangerie-dana.firebasestorage.app", messagingSenderId: "508760970095", appId: "1:508760970095:web:0be3c6fb78eb5426698e9a" };
 const fallbackAdminEmails = ["devbarack2000@gmail.com"];
@@ -26,7 +27,7 @@ let categoryChart;
 function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[character])); }
 function toast(message, type = "info") { const element = document.createElement("div"); element.className = "orders-toast"; element.dataset.type = type; element.textContent = message; document.body.appendChild(element); setTimeout(() => element.remove(), 3500); }
 function dateOf(order) { const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt || 0); return Number.isNaN(date.getTime()) ? null : date; }
-function orderTotal(order) { return Number(order.total ?? order.totalAmount ?? 0); }
+function orderTotal(order) { return calculateOrderTotalFromOrder(order); }
 function selectedPeriod() { return document.getElementById("stats-period")?.value || "all"; }
 function inPeriod(order, period) { const date = dateOf(order); if (!date || period === "all") return period === "all"; const now = new Date(); if (period === "today") return date.toDateString() === now.toDateString(); if (period === "month") return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear(); const start = new Date(now); start.setDate(now.getDate() - now.getDay()); start.setHours(0, 0, 0, 0); return date >= start; }
 function clientName(order) { const user = users.find(item => item.id === order.clientId || item.uid === order.clientId); return user?.nom || user?.name || order.clientName || order.customerName || "Client inconnu"; }

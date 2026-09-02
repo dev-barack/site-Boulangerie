@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, onSnapshot, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { calculateOrderTotalFromOrder } from "./calculations.js";
 
 const config = { apiKey: "AIzaSyA7YsFC0dtxU09zg8j3q6jv2UHoYQJQqTRA", authDomain: "boulangerie-dana.firebaseapp.com", projectId: "boulangerie-dana", storageBucket: "boulangerie-dana.firebasestorage.app", messagingSenderId: "508760970095", appId: "1:508760970095:web:0be3c6fb78eb5426698e9a" };
 const app = getApps().length ? getApps()[0] : initializeApp(config);
@@ -49,9 +50,17 @@ function getOrderStatusLabel(status) {
 }
 
 function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[character])); }
-function total(order) { return Number(order.total ?? order.totalAmount ?? 0); }
+function total(order) { return calculateOrderTotalFromOrder(order); }
 function dateOf(order) { const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt || 0); return Number.isNaN(date.getTime()) ? null : date; }
-function clientName(order) { const client = clients.find(item => item.id === order.clientId || item.uid === order.clientId); return client?.nom || client?.name || order.clientName || order.customerName || "Client inconnu"; }
+function clientName(order) {
+  const client = clients.find(item => {
+    const ids = [item.id, item.uid, item.clientId, item.userId];
+    const matchUid = ids.includes(order.clientId) || ids.includes(order.customerId) || ids.includes(order.uid) || ids.includes(order.customerUid);
+    const matchNumber = item.clientNumber === (order.clientNumber || order.customerNumber) || item.phone === (order.phone || order.telephone) || item.email === (order.email || order.clientEmail || order.customerEmail);
+    return matchUid || matchNumber;
+  });
+  return client?.nom || client?.name || order.clientName || order.customerName || (order.clientId ? `Client ${String(order.clientId).slice(0, 12)}` : "Client inconnu");
+}
 function itemsOf(order) { return Array.isArray(order.items) ? order.items : []; }
 function showToast(message, type = "info") { const element = document.createElement("div"); element.className = "orders-toast"; element.dataset.type = type; element.textContent = message; document.body.appendChild(element); setTimeout(() => element.remove(), 3500); }
 function setLoading(value) { const element = document.getElementById("sales-loading"); if (element) element.hidden = !value; }

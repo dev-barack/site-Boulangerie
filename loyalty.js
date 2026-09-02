@@ -29,7 +29,10 @@ function render() {
   body.innerHTML = "";
   if (!visible.length) { body.innerHTML = '<tr><td colspan="4" class="empty-state">Aucun client trouvé.</td></tr>'; return; }
   visible.forEach(client => {
-    const clientOrders = orders.filter(order => order.clientId === client.id || order.clientId === client.uid);
+    const clientOrders = orders.filter(order => {
+      const clientIds = [order.clientId, order.uid, order.customerId, order.customerUid];
+      return clientIds.includes(client.id) || clientIds.includes(client.uid) || order.clientNumber === client.clientNumber || order.customerNumber === client.clientNumber;
+    });
     const row = document.createElement("tr");
     row.innerHTML = `<td>${escapeHtml(client.nom || client.name || "Client")}</td><td style="color:var(--accent-gold);font-weight:700;">${Number(client.loyaltyPoints || client.points || 0)}</td><td>${clientOrders.length}</td><td style="text-align:right"><button class="btn btn-ghost loyalty-history-button" type="button">Historique</button></td>`;
     row.querySelector("button").addEventListener("click", () => openHistory(client, clientOrders));

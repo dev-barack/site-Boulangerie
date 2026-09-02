@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Commandes — Boulangerie DANA</title>
+  <title>Offres spéciales — Boulangerie DANA</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="offers.css" />
 </head>
-<body class="orders-page">
+<body class="offers-page">
   <div class="app-container">
     <aside>
       <div>
@@ -18,8 +19,8 @@
           <li><a href="dashboard.html">📊 Dashboard</a></li>
           <li><a href="users.html">👥 Gestion Utilisateurs</a></li>
           <li><a href="products.html">🥖 Produits</a></li>
-          <li><a href="offers.html">🎯 Offres spéciales</a></li>
-          <li><a href="orders.html" class="active">📦 Commandes</a></li>
+          <li><a href="offers.html" class="active">🎯 Offres spéciales</a></li>
+          <li><a href="orders.html">📦 Commandes</a></li>
           <li><a href="sales.html">💰 Ventes</a></li>
           <li><a href="qr_cards.html">🔖 QR / Cartes clients</a></li>
           <li><a href="loyalty.html">🏅 Fidélité</a></li>
@@ -38,57 +39,52 @@
         <div class="header-identity">
           <img src="images/logo.png" alt="Logo DANA" />
           <div class="header-identity-copy">
-
-            <span class="header-page-title">Commandes</span>
+            <span class="header-page-title">Offres spéciales</span>
           </div>
         </div>
 
         <div class="header-right">
-          <label class="header-search" aria-label="Recherche commandes">
-            <input id="orders-search" placeholder="Rechercher (client, ID)" aria-label="Recherche commande" />
+          <label class="header-search" aria-label="Recherche offre">
+            <input id="offers-search" placeholder="Rechercher une offre" aria-label="Recherche offre" />
           </label>
           <div id="profile-bubble">A</div>
         </div>
       </header>
 
-      <div class="page-toolbar" aria-label="Actions commande">
+      <div class="page-toolbar" aria-label="Actions offres">
         <div class="toolbar-left"></div>
         <div class="toolbar-actions">
-          <button id="orders-toggle-filters" class="btn btn-ghost" type="button">Filtres</button>
-          <select id="orders-filter-status" aria-label="Filtre statut">
-            <option value="">Tous les statuts</option>
-            <option value="VALIDATED">Validée</option>
-            <option value="PENDING">En attente</option>
-            <option value="READY">Prête</option>
-            <option value="PICKED_UP">Retirée</option>
-            <option value="CANCELLED">Annulée</option>
-          </select>
-          <button id="btn-create-order" class="btn" type="button">Créer une commande</button>
+          <button id="btn-create-offer" class="btn" type="button">+ Créer une offre</button>
         </div>
       </div>
 
+      <div id="offers-summary" class="offers-summary" style="margin-top: 12px;"></div>
+
       <div class="panel" style="margin-top:12px;">
-        <div id="orders-loading" class="orders-spinner" aria-live="polite" hidden>Chargement...</div>
-        <table style="width:100%;font-size:13px;">
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Client</th>
-              <th>Date</th>
-              <th>Montant</th>
-              <th>Statut</th>
-              <th style="text-align:right;">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="orders-table-body">
-            <tr><td colspan="6" class="empty-state">Chargement des commandes...</td></tr>
-          </tbody>
-        </table>
+        <div id="offers-loading" class="skeleton" style="height:12px;width:120px;margin-bottom:8px;display:none;"></div>
+        <div class="offers-table-scroll">
+          <table style="width:100%;font-size:13px;">
+            <thead>
+              <tr>
+                <th>Produit</th>
+                <th>Image</th>
+                <th>Remise</th>
+                <th>Prix réduit</th>
+                <th>Statut</th>
+                <th>Date</th>
+                <th style="text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="offers-table-body">
+              <tr><td colspan="7" class="empty-state">Chargement des offres...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </main>
   </div>
 
   <script type="module" src="script.js"></script>
-  <script type="module" src="orders.js"></script>
+  <script type="module" src="offers.js"></script>
 </body>
 </html>

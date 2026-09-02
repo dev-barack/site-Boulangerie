@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, getDocs, getDoc, onSnapshot, setDoc, updateDoc, deleteDoc, doc, serverTimestamp, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { isProductAvailable, toNumber } from "./calculations.js";
 
 const firebaseConfig = { apiKey: "AIzaSyA7YsFC0dtxU09zg8j3q6jv2UHoYQJQqTRA", authDomain: "boulangerie-dana.firebaseapp.com", projectId: "boulangerie-dana", storageBucket: "boulangerie-dana.firebasestorage.app", messagingSenderId: "508760970095", appId: "1:508760970095:web:0be3c6fb78eb5426698e9a" };
 const fallbackAdminEmails = ["devbarack2000@gmail.com"];
@@ -24,7 +25,7 @@ const PLACEHOLDER_IMAGE = "images/pain3.png";
 function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[character])); }
 function toast(message, type = "info") { const element = document.createElement("div"); element.className = "orders-toast"; element.dataset.type = type; element.textContent = message; document.body.appendChild(element); setTimeout(() => element.remove(), 3500); }
 function setLoading(value) { const element = document.getElementById("products-loading"); if (element) element.style.display = value ? "block" : "none"; }
-function isAvailable(product) { return product.isAvailable !== false && Number(product.stock || 0) > 0; }
+function isAvailable(product) { return isProductAvailable(product); }
 
 async function ensureProductSchema() {
   const snapshot = await getDocs(collection(db, "products"));
@@ -57,7 +58,7 @@ function renderProducts() {
     row.innerHTML = `
       <td><img class="product-table-preview" src="${escapeHtml(product.imageUrl || PLACEHOLDER_IMAGE)}" alt="${escapeHtml(product.name || "Produit")}" onerror="this.onerror=null;this.src='${PLACEHOLDER_IMAGE}';" /></td>
       <td><strong>${escapeHtml(product.name || "Produit sans nom")}</strong><small class="product-description">${escapeHtml(product.category || "Divers")}</small></td>
-      <td>${Number(product.price || 0).toLocaleString("fr-FR")} FC</td>
+      <td>${toNumber(product.price || 0).toLocaleString("fr-FR")} FC</td>
       <td><span class="stock-value ${lowStock ? "stock-low" : ""}">${stock}</span>${lowStock ? '<span class="stock-alert">Stock faible</span>' : ""}</td>
       <td><button class="availability-toggle ${available ? "is-on" : "is-off"}" type="button" aria-label="Basculer disponibilité">${available ? "Disponible" : "Indisponible"}</button></td>
       <td style="text-align:right"><button class="btn btn-ghost product-edit" type="button">Modifier</button><button class="btn btn-ghost product-delete" type="button">Supprimer</button></td>

@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 import { getFirestore, collection, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { calculateOrderTotalFromOrder } from "./calculations.js";
 
 const config = { apiKey: "AIzaSyA7YsFC0dtxU09zg8j3q6jv2UHoYQJQqTRA", authDomain: "boulangerie-dana.firebaseapp.com", projectId: "boulangerie-dana", storageBucket: "boulangerie-dana.firebasestorage.app", messagingSenderId: "508760970095", appId: "1:508760970095:web:0be3c6fb78eb5426698e9a" };
 const app = getApps().length ? getApps()[0] : initializeApp(config);
@@ -32,7 +33,7 @@ function disposeDashboardListeners() {
 function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[character])); }
 function toast(message) { const element = document.createElement("div"); element.className = "orders-toast"; element.dataset.type = "error"; element.textContent = message; document.body.appendChild(element); setTimeout(() => element.remove(), 4000); }
 function dateOf(order) { const date = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt || 0); return Number.isNaN(date.getTime()) ? null : date; }
-function total(order) { return Number(order.total ?? order.totalAmount ?? 0); }
+function total(order) { return calculateOrderTotalFromOrder(order); }
 function clientName(order) { const client = users.find(user => user.id === order.clientId || user.uid === order.clientId); return client?.nom || client?.name || order.clientName || order.customerName || "Client inconnu"; }
 function itemsOf(order) { return Array.isArray(order.items) ? order.items : []; }
 function update(id, value) { const element = document.getElementById(id); if (element) element.textContent = value; }

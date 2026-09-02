@@ -278,11 +278,22 @@ function renderClientOrders(orders) {
 function filterOrdersForClient(orders, client) {
   const clientId = getClientIdentifier(client);
   const clientNumber = client?.clientNumber || client?.phone || client?.telephone || "";
+  const uidCandidates = [clientId, client?.id, client?.uid, client?.clientId, client?.userId].filter(Boolean);
+  const clientNumberCandidates = [clientNumber, client?.customerNumber, client?.clientNumber].filter(Boolean);
   return orders.filter(order => {
     const orderClientId = order.clientId || "";
-    const orderClientNumber = order.clientNumber || "";
+    const orderClientNumber = order.clientNumber || order.customerNumber || "";
     const orderPhone = order.phone || order.telephone || "";
-    return orderClientId === clientId || orderClientId === client?.id || orderClientId === client?.uid || orderClientNumber === clientNumber || orderPhone === (client?.phone || client?.telephone || "");
+    const orderUid = order.uid || order.customerUid || "";
+    return (
+      uidCandidates.includes(orderClientId) ||
+      uidCandidates.includes(orderUid) ||
+      clientNumberCandidates.includes(orderClientNumber) ||
+      clientNumberCandidates.includes(orderClientId) ||
+      orderPhone === (client?.phone || client?.telephone || "") ||
+      orderClientNumber === clientNumber ||
+      orderClientId === clientNumber
+    );
   });
 }
 
@@ -368,11 +379,15 @@ function openClientResult(client) {
 
   const loadClientOrders = async () => {
     try {
+      const clientNumberValues = [client.clientNumber, client.customerNumber].filter(Boolean);
+      const uidValues = [clientId, client.uid, client.id, client.userId].filter(Boolean);
       const queries = [
-        getDocs(query(collection(db, "orders"), where("clientId", "==", clientId))),
-        ...(client.clientNumber ? [getDocs(query(collection(db, "orders"), where("clientNumber", "==", client.clientNumber)))] : []),
-        ...(client.uid ? [getDocs(query(collection(db, "orders"), where("clientId", "==", client.uid)))] : []),
-        ...(client.phone || client.telephone ? [getDocs(query(collection(db, "orders"), where("phone", "==", client.phone || client.telephone)))] : [])
+        ...uidValues.map(value => getDocs(query(collection(db, "orders"), where("clientId", "==", value)))),
+        ...clientNumberValues.map(value => getDocs(query(collection(db, "orders"), where("clientId", "==", value)))),
+        ...clientNumberValues.map(value => getDocs(query(collection(db, "orders"), where("clientNumber", "==", value)))),
+        ...clientNumberValues.map(value => getDocs(query(collection(db, "orders"), where("customerNumber", "==", value)))),
+        ...(client.phone || client.telephone ? [getDocs(query(collection(db, "orders"), where("phone", "==", client.phone || client.telephone)))] : []),
+        ...(client.phone || client.telephone ? [getDocs(query(collection(db, "orders"), where("telephone", "==", client.phone || client.telephone)))] : [])
       ];
 
       const snapshots = await Promise.all(queries);

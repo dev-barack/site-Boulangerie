@@ -1,6 +1,7 @@
 import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, getDoc, onSnapshot, addDoc, updateDoc, doc, query, where, orderBy, serverTimestamp, runTransaction, writeBatch, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, getDoc, onSnapshot, addDoc, updateDoc, doc, query, where, orderBy, serverTimestamp, runTransaction, writeBatch, increment, Timestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { calculateItemTotal, calculateOrderTotalFromOrder, safeQuantity, toNumber } from "./calculations.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA7YsFC0dtxU09zg8j3q6jv2UHoYQJQqTRA",
@@ -83,32 +84,129 @@ function toast(message, type = "info") {
   document.body.appendChild(element);
   setTimeout(() => element.remove(), 3500);
 }
-function orderTotal(order) { return Number(order.total ?? order.totalAmount ?? 0); }
+function orderTotal(order) { return calculateOrderTotalFromOrder(order); }
 function orderDate(order) {
   const value = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(order.createdAt || 0);
   return Number.isNaN(value.getTime()) ? "-" : value.toLocaleString("fr-FR");
 }
+
+function normalizeClientIdentifier(value) {
+  return String(value ?? "").trim();
+}
+
+function getClientByUid(uid) {
+  const candidate = normalizeClientIdentifier(uid);
+  if (!candidate) return null;
+
+  return clients.find(item => {
+    const userId = normalizeClientIdentifier(item.id);
+    const itemUid = normalizeClientIdentifier(item.uid);
+    const itemClientId = normalizeClientIdentifier(item.clientId);
+    return userId === candidate || itemUid === candidate || itemClientId === candidate;
+  }) || null;
+}
+
+function getClientByClientNumber(clientNumber) {
+  const candidate = normalizeClientIdentifier(clientNumber);
+  if (!candidate) return null;
+
+  return clients.find(item => {
+    const userClientNumber = normalizeClientIdentifier(item.clientNumber || item.customerNumber || "");
+    return userClientNumber === candidate;
+  }) || null;
+}
+
+function getClientByIdentifier(identifier) {
+  const candidate = normalizeClientIdentifier(identifier);
+  if (!candidate) return null;
+  return clients.find(item => {
+    const userId = normalizeClientIdentifier(item.id);
+    const uid = normalizeClientIdentifier(item.uid);
+    const itemClientId = normalizeClientIdentifier(item.clientId);
+    const clientNumber = normalizeClientIdentifier(item.clientNumber || item.customerNumber || "");
+    const phone = normalizeClientIdentifier(item.phone || item.telephone || "");
+    const email = normalizeClientIdentifier(item.email || item.userEmail || "");
+    return userId === candidate || uid === candidate || itemClientId === candidate || clientNumber === candidate || phone === candidate || email.toLowerCase() === candidate.toLowerCase();
+  }) || null;
+}
+
+function resolveOrderClient(order) {
+  if (!order) return null;
+
+  const uidCandidates = [order?.clientId, order?.uid, order?.customerId, order?.clientUid, order?.customerUid];
+  for (const candidate of uidCandidates) {
+    const matched = getClientByUid(candidate);
+    if (matched) return matched;
+  }
+
+  const numberCandidates = [order?.clientNumber, order?.customerNumber, order?.clientId, order?.customerId];
+  for (const candidate of numberCandidates) {
+    const matched = getClientByClientNumber(candidate);
+    if (matched) return matched;
+  }
+
+  const clientIdMatch = getClientByIdentifier(order?.clientId || order?.customerId || order?.uid);
+  if (clientIdMatch) return clientIdMatch;
+
+  const candidateIds = [order?.phone, order?.telephone, order?.clientPhone, order?.customerPhone, order?.email, order?.clientEmail, order?.customerEmail];
+  for (const candidate of candidateIds) {
+    const matched = getClientByIdentifier(candidate);
+    if (matched) return matched;
+  }
+  return null;
+}
+
 function clientName(order) {
-  const client = clients.find(item => item.id === order.clientId || item.uid === order.clientId);
-  return client ? (client.nom || client.name || client.email || "Client") : (order.clientName || order.customerName || "Client inconnu");
+  const client = resolveOrderClient(order);
+  if (client) return client.nom || client.name || client.email || "Client";
+
+  const fallbackUid = normalizeClientIdentifier(order?.clientId || order?.uid || order?.customerId || "");
+  if (fallbackUid) return `Client ${fallbackUid.slice(0, 12)}`;
+  return order.clientName || order.customerName || "Client inconnu";
 }
 function setLoading(value) { const element = document.getElementById("orders-loading"); if (element) element.hidden = !value; }
 
 export async function linkExistingOrdersToClients() {
   const [orderSnapshot, userSnapshot] = await Promise.all([getDocs(collection(db, "orders")), getDocs(collection(db, "users"))]);
   const users = userSnapshot.docs.map(item => ({ id: item.id, ...item.data() }));
-  const findClient = order => users.find(user => {
-    const orderEmail = String(order.email || order.clientEmail || order.customerEmail || "").toLowerCase();
-    const orderPhone = String(order.phone || order.clientPhone || order.customerPhone || "");
-    return (orderEmail && String(user.email || "").toLowerCase() === orderEmail) || (orderPhone && String(user.phone || "") === orderPhone);
-  });
+  const findClient = order => {
+    const candidateIds = [
+      order.clientId,
+      order.customerId,
+      order.uid,
+      order.clientNumber,
+      order.customerNumber,
+      order.phone,
+      order.telephone,
+      order.clientPhone,
+      order.customerPhone,
+      order.email,
+      order.clientEmail,
+      order.customerEmail
+    ];
+
+    for (const candidate of candidateIds) {
+      const value = String(candidate ?? "").trim();
+      if (!value) continue;
+      const match = users.find(user => {
+        const userId = String(user.id || "");
+        const userUid = String(user.uid || "");
+        const userClientNumber = String(user.clientNumber || user.customerNumber || "");
+        const userPhone = String(user.phone || user.telephone || "");
+        const userEmail = String(user.email || user.userEmail || "").toLowerCase();
+        return userId === value || userUid === value || userClientNumber === value || userPhone === value || userEmail === value.toLowerCase();
+      });
+      if (match) return match;
+    }
+    return null;
+  };
   const batch = writeBatch(db);
   let linked = 0;
   orderSnapshot.docs.forEach(item => {
     const data = item.data();
-    const client = !data.clientId ? findClient(data) : null;
+    const client = !data.clientId ? findClient(data) : findClient(data) || null;
     if (client) {
-      batch.update(doc(db, "orders", item.id), { clientId: client.id });
+      batch.update(doc(db, "orders", item.id), { clientId: client.id, clientUid: client.uid || client.id, updatedAt: serverTimestamp() });
       linked += 1;
     }
   });
@@ -195,7 +293,7 @@ function openOrderModal(order) {
       <div class="orders-modal-header"><h3>Détails de la commande</h3><button class="btn-ghost modal-close" type="button">✕</button></div>
       <div class="order-summary"><div><span>Client</span><strong>${escapeHtml(clientName(order))}</strong></div><div><span>Date</span><strong>${escapeHtml(orderDate(order))}</strong></div><div><span>Total</span><strong>${orderTotal(order).toLocaleString("fr-FR")} FC</strong></div></div>
       <h4>Articles</h4>
-      <div class="order-items">${items.length ? items.map(item => `<div><span>${escapeHtml(item.productName || item.name || "Produit")} × ${Number(item.quantity || item.qty || 1)}</span><strong>${(Number(item.price || 0) * Number(item.quantity || item.qty || 1)).toLocaleString("fr-FR")} FC</strong></div>`).join("") : '<p class="empty-state">Aucun article détaillé.</p>'}</div>
+      <div class="order-items">${items.length ? items.map(item => `<div><span>${escapeHtml(item.productName || item.name || "Produit")} × ${safeQuantity(item.quantity ?? item.qty ?? 1)}</span><strong>${calculateItemTotal(item).toLocaleString("fr-FR")} FC</strong></div>`).join("") : '<p class="empty-state">Aucun article détaillé.</p>'}</div>
       <form class="order-status-form"><label for="order-status-select">Statut</label><select id="order-status-select"><option value="PENDING">En attente</option><option value="VALIDATED">Validée</option><option value="READY">Prête</option><option value="PICKED_UP">Retirée</option><option value="CANCELLED">Annulée</option></select><div class="orders-modal-actions"><button type="button" class="btn-ghost modal-close">Annuler</button><button class="btn" type="submit">Enregistrer</button></div></form>
     </div>`;
   document.body.appendChild(modal);
@@ -219,12 +317,13 @@ function openOrderModal(order) {
 async function handleStatusChange(clientId, orderId, newStatus) {
   if (!orderId) throw new Error("Commande introuvable");
 
-  const safeClientId = typeof clientId === "string" && clientId.trim() ? clientId.trim() : null;
   const orderRef = doc(db, "orders", orderId);
   const orderSnap = await getDoc(orderRef);
   if (!orderSnap.exists()) throw new Error("Commande introuvable");
 
   const current = orderSnap.data();
+  const matchedClient = resolveOrderClient(current) || getClientByIdentifier(clientId);
+  const safeClientId = matchedClient ? matchedClient.id : (typeof clientId === "string" && clientId.trim() ? clientId.trim() : null);
   const normalizedNewStatus = normalizeOrderStatus(newStatus);
   const previousStatus = normalizeOrderStatus(current.status || "PENDING");
   const settingsSnap = await getDoc(doc(db, "settings", "config"));
@@ -236,13 +335,22 @@ async function handleStatusChange(clientId, orderId, newStatus) {
     changedBy: "admin",
     fromStatus: previousStatus,
     toStatus: normalizedNewStatus,
-    at: serverTimestamp()
+    at: Timestamp.now()
   };
 
   const updateUserPoints = async (delta) => {
     if (!safeClientId || typeof delta !== "number") return;
     try {
-      await updateDoc(doc(db, "users", safeClientId), { points: increment(delta) });
+      const userRef = doc(db, "users", safeClientId);
+      const userSnap = await getDoc(userRef);
+      if (!userSnap.exists()) {
+        const fallbackClient = matchedClient || getClientByIdentifier(current.clientNumber || current.customerNumber || current.clientId || current.customerId || "");
+        if (fallbackClient) {
+          await updateDoc(doc(db, "users", fallbackClient.id), { points: increment(delta) });
+        }
+        return;
+      }
+      await updateDoc(userRef, { points: increment(delta) });
     } catch (error) {
       console.warn("Mise à jour du client ignorée pendant le changement de statut:", error);
     }
@@ -263,7 +371,7 @@ async function handleStatusChange(clientId, orderId, newStatus) {
     return;
   }
 
-  const rewardsAllowed = ["VALIDATED", "PICKED_UP", "RETRIEVED"].includes(normalizedNewStatus);
+  const rewardsAllowed = ["VALIDATED", "PICKED_UP", "RETRIEVED", "COMPLETED"].includes(normalizedNewStatus);
   const shouldRemoveAward = pointsAlreadyAwarded > 0 && !rewardsAllowed;
   if (shouldRemoveAward) {
     await updateUserPoints(-pointsAlreadyAwarded);
@@ -277,7 +385,7 @@ async function handleStatusChange(clientId, orderId, newStatus) {
       return Number(loyaltyValue || 0);
     })();
 
-    if (pointsToAdd > 0 && (!current.loyaltyAwarded || pointsAlreadyAwarded === 0)) {
+    if (pointsToAdd > 0 && (normalizeOrderStatus(current.status || "PENDING") !== normalizedNewStatus || !current.loyaltyAwarded || pointsAlreadyAwarded === 0)) {
       await updateUserPoints(pointsToAdd);
       await updateDoc(orderRef, {
         status: normalizedNewStatus,
@@ -332,7 +440,7 @@ function openCreateOrderModal() {
     const items = [...itemsContainer.querySelectorAll(".new-order-item")].map(line => { const product = products.find(item => item.id === line.querySelector(".new-order-product").value); return { productId: product.id, productName: product.name || product.nom || "Produit", price: Number(product.price || 0), quantity: Number(line.querySelector(".new-order-quantity").value || 1) }; });
     if (!clientId || !items.length || items.some(item => !item.productId)) return toast("Sélectionnez un client et au moins un produit.", "error");
     try {
-      const orderTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+      const orderTotal = items.reduce((sum, item) => sum + calculateItemTotal(item), 0);
       await addDoc(collection(db, "orders"), {
         clientId,
         items,
@@ -346,7 +454,7 @@ function openCreateOrderModal() {
           changedBy: "system",
           fromStatus: "",
           toStatus: platformSettings.orderInitialStatus || "PENDING",
-          at: serverTimestamp()
+          at: Timestamp.now()
         }]
       });
       modal.remove();
@@ -362,7 +470,11 @@ async function start() {
     try {
       await linkExistingOrdersToClients();
       const [userSnapshot, productSnapshot, settingsSnapshot] = await Promise.all([getDocs(collection(db, "users")), getDocs(collection(db, "products")), getDoc(doc(db, "settings", "config"))]);
-      clients = userSnapshot.docs.map(item => ({ id: item.id, ...item.data() })).filter(item => String(item.role || "").toUpperCase() === "CLIENT");
+      const allUsers = userSnapshot.docs.map(item => ({ id: item.id, ...item.data() }));
+      clients = allUsers.filter(item => {
+        const role = String(item.role || "").trim().toUpperCase();
+        return !["ADMIN", "AGENT"].includes(role);
+      });
       products = productSnapshot.docs.map(item => ({ id: item.id, ...item.data() }));
       if (settingsSnapshot.exists()) platformSettings = { ...platformSettings, ...settingsSnapshot.data() };
 
